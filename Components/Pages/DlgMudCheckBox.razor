@@ -4,26 +4,19 @@
 	</TitleContent>
 	<DialogContent>
 		<MudGrid Spacing="4">
-
-			@* ABC *@
-			<MudItem xs="1">
-				<MudTextField Value=@strABC
-							  ReadOnly=@true
-							  Label="ABC"
-							  Variant=@Variant.Filled />
-			</MudItem>
-
-			@* Done *@
-			<MudItem xs="3">
+			
+			@* Error *@
+			<MudItem xs="6">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
-						  Label="Done">
+						  Label="Error">
 					<MudCheckBox T=@bool
 								 Size=@Size.Small
 								 @bind-Value=@blnError
 								 @bind-Value:after=@SaveRecord />
 				</MudField>
 			</MudItem>
+
 		</MudGrid>
 	</DialogContent>
 	<DialogActions>
