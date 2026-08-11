@@ -6,20 +6,20 @@
 		<MudGrid Spacing="4">
 
 			@* Error *@
-			<MudItem xs="8">
+			<MudItem xs="4">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
 						  Label="Error">
 					<MudCheckBox T=@bool
 								 Size=@Size.Small
 								 @bind-Value=@blnError
-								 @bind-Value:after=@SaveRecord />
+								 @bind-Value:after=@SaveRecord /> @* Removing @bind-Value:after=@SaveRecord prevents the error *@
 				</MudField>
 			</MudItem>
 
 		</MudGrid>
 	</DialogContent>
 	<DialogActions>
-		@* DialogActions present causes the HotReload Error *@
+		@* Removing DialogActions prevents the Error *@
 	</DialogActions>
 </MudDialog>
