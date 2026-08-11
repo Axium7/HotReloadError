@@ -5,18 +5,21 @@
 
 <MudGrid Spacing="4">
 
-	<MudButton Variant=@Variant.Filled
-			   Color=@Color.Primary
-			   OnClick=@OpenDialogError>
-		Open Dialog Error
-	</MudButton>
+	<MudItem xs="3">
+		<MudButton Variant=@Variant.Filled
+				   Color=@Color.Primary
+				   OnClick=@OpenDialogError>
+			Open Dialog Error
+		</MudButton>
+	</MudItem>
 
-	<MudButton Variant=@Variant.Filled
-			   Color=@Color.Primary
-			   OnClick=@OpenDialogWorks>
-		Open Dialog Works
-	</MudButton>
-
+	<MudItem xs="3">
+		<MudButton Variant=@Variant.Filled
+				   Color=@Color.Primary
+				   OnClick=@OpenDialogWorks>
+			Open Dialog Works
+		</MudButton>
+	</MudItem>
 
 </MudGrid>
 
@@ -31,10 +34,10 @@
 			FullWidth = true
 		};
 
-		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Test", options);
+		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Error", options);
 	}
 
-	private async Task OpenDialogError()
+	private async Task OpenDialogWorks()
 	{
 		DialogOptions options = new()
 		{
@@ -43,7 +46,7 @@
 			FullWidth = true
 		};
 
-		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Test", options);
+		await MudDialogs.ShowAsync<DlgMudCheckBoxWorks>("Hot Reload Works", options);
 	}
 }
 

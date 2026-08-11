@@ -6,7 +6,7 @@
 		<MudGrid Spacing="4">
 
 			@* Error *@
-			<MudItem xs="7">
+			<MudItem xs="8">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
 						  Label="Error">
@@ -20,10 +20,6 @@
 		</MudGrid>
 	</DialogContent>
 	<DialogActions>
-
-		@* Save *@
-		<MudIconButton OnClick=@(() => MudDialog?.Close())
-					   Icon=@Icons.Material.Rounded.CheckCircle />
-
+		@* DialogActions present causes the HotReload Error *@
 	</DialogActions>
 </MudDialog>

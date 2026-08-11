@@ -3,7 +3,7 @@ using MudBlazor;
 
 namespace HotReloadError.Components.Pages;
 
-public partial class DlgMudCheckBox
+public partial class DlgMudCheckBoxWorks
 {
 	[CascadingParameter]
 	private IMudDialogInstance MudDialog { get; set; }

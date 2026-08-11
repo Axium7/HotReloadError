@@ -5,11 +5,11 @@
 	<DialogContent>
 		<MudGrid Spacing="4">
 
-			@* Error *@
-			<MudItem xs="7">
+			@* Works *@
+			<MudItem xs="10">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
-						  Label="Error">
+						  Label="Works">
 					<MudCheckBox T=@bool
 								 Size=@Size.Small
 								 @bind-Value=@blnError
@@ -19,11 +19,7 @@
 
 		</MudGrid>
 	</DialogContent>
-	<DialogActions>
 
-		@* Save *@
-		<MudIconButton OnClick=@(() => MudDialog?.Close())
-					   Icon=@Icons.Material.Rounded.CheckCircle />
+	@* NO DialogActions prevents the HotReload Error *@
 
-	</DialogActions>
 </MudDialog>
