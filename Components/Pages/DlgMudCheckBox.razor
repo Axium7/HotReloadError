@@ -4,9 +4,9 @@
 	</TitleContent>
 	<DialogContent>
 		<MudGrid Spacing="4">
-			
+
 			@* Error *@
-			<MudItem xs="6">
+			<MudItem xs="7">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
 						  Label="Error">
@@ -22,12 +22,8 @@
 	<DialogActions>
 
 		@* Save *@
-		<MudIconButton OnClick=@(() => MudDialog?.Close()) AutoFocus=@true
-					   Size=@Size.Large
-					   Style="width: 7%"
-					   Icon=@Icons.Material.Rounded.CheckCircle
-					   Color=@Color.Info
-					   Variant=@Variant.Filled />
+		<MudIconButton OnClick=@(() => MudDialog?.Close())
+					   Icon=@Icons.Material.Rounded.CheckCircle />
 
 	</DialogActions>
 </MudDialog>
