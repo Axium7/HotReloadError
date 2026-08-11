@@ -1,0 +1,29 @@
+﻿<MudDialog TitleClass="dlgTitle">
+	<TitleContent>
+		@MudDialog.Title
+	</TitleContent>
+	<DialogContent>
+		<MudGrid Spacing="4">
+
+			@* Error *@
+			<MudItem xs="7">
+				<MudField Variant=@Variant.Outlined
+						  InnerPadding=@false
+						  Label="Error">
+					<MudCheckBox T=@bool
+								 Size=@Size.Small
+								 @bind-Value=@blnError
+								 @bind-Value:after=@SaveRecord />
+				</MudField>
+			</MudItem>
+
+		</MudGrid>
+	</DialogContent>
+	<DialogActions>
+
+		@* Save *@
+		<MudIconButton OnClick=@(() => MudDialog?.Close())
+					   Icon=@Icons.Material.Rounded.CheckCircle />
+
+	</DialogActions>
+</MudDialog>

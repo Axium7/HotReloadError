@@ -5,21 +5,16 @@
 
 <MudGrid Spacing="4">
 
-	@* Works *@
-	<MudItem xs="2">
-		<MudField Variant=@Variant.Outlined
-				  Label="Works">
-			<MudCheckBox T=@bool
-						 Size=@Size.Small
-						 @bind-Value=@blnWorks 
-						 @bind-Value:after=@SaveRecord />
-		</MudField>
-	</MudItem>
+	<MudButton Variant=@Variant.Filled
+			   Color=@Color.Primary
+			   OnClick=@OpenDialogError>
+		Open Dialog Error
+	</MudButton>
 
 	<MudButton Variant=@Variant.Filled
 			   Color=@Color.Primary
-			   OnClick=@OpenDialog>
-		Open Dialog
+			   OnClick=@OpenDialogWorks>
+		Open Dialog Works
 	</MudButton>
 
 
@@ -27,12 +22,7 @@
 
 @code {
 
-	private bool blnWorks;
-	private void SaveRecord()
-	{
-	}
-
-	private async Task OpenDialog()
+	private async Task OpenDialogError()
 	{
 		DialogOptions options = new()
 		{
@@ -41,7 +31,19 @@
 			FullWidth = true
 		};
 
-		await MudDialogs.ShowAsync<DlgMudCheckBox>("Hot Reload Test", options);
+		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Test", options);
+	}
+
+	private async Task OpenDialogError()
+	{
+		DialogOptions options = new()
+		{
+			CloseButton = true,
+			MaxWidth = MaxWidth.Small,
+			FullWidth = true
+		};
+
+		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Test", options);
 	}
 }
 
