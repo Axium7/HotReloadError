@@ -1,0 +1,42 @@
+﻿<MudDialog TitleClass="dlgTitle">
+	<TitleContent>
+		@MudDialog.Title
+	</TitleContent>
+	<DialogContent>
+		<MudGrid Spacing="4">
+
+			@* ===== Row 0 ===== *@
+
+			@* ABC *@
+			<MudItem xs="1">
+				<MudTextField Value=@strABC
+							  ReadOnly=@true
+							  Label="ABC"
+							  Variant=@Variant.Filled />
+			</MudItem>
+
+			@* Done *@
+			<MudItem xs="3">
+				<MudField Variant=@Variant.Outlined
+						  InnerPadding=@false
+						  Label="Done">
+					<MudCheckBox T=@bool
+								 Size=@Size.Small
+								 @bind-Value=@blnError
+								 @bind-Value:after=@SaveRecord />
+				</MudField>
+			</MudItem>
+		</MudGrid>
+	</DialogContent>
+	<DialogActions>
+
+		@* Save *@
+		<MudIconButton OnClick=@(() => MudDialog?.Close()) AutoFocus=@true
+					   Size=@Size.Large
+					   Style="width: 7%"
+					   Icon=@Icons.Material.Rounded.CheckCircle
+					   Color=@Color.Info
+					   Variant=@Variant.Filled />
+
+	</DialogActions>
+</MudDialog>

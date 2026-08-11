@@ -1,0 +1,47 @@
+﻿@page "/"
+@inject IDialogService MudDialogs
+
+<PageTitle>Home</PageTitle>
+
+<MudGrid Spacing="4">
+
+	@* Works *@
+	<MudItem xs="2">
+		<MudField Variant=@Variant.Outlined
+				  Label="Works">
+			<MudCheckBox T=@bool
+						 Size=@Size.Small
+						 @bind-Value=@blnWorks 
+						 @bind-Value:after=@SaveRecord />
+		</MudField>
+	</MudItem>
+
+	<MudButton Variant=@Variant.Filled
+			   Color=@Color.Primary
+			   OnClick=@OpenDialog>
+		Open Dialog
+	</MudButton>
+
+
+</MudGrid>
+
+@code {
+
+	private bool blnWorks;
+	private void SaveRecord()
+	{
+	}
+
+	private async Task OpenDialog()
+	{
+		DialogOptions options = new()
+		{
+			CloseButton = true,
+			MaxWidth = MaxWidth.Small,
+			FullWidth = true
+		};
+
+		await MudDialogs.ShowAsync<DlgMudCheckBox>("Hot Reload Test", options);
+	}
+}
+
