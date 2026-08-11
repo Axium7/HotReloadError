@@ -6,14 +6,14 @@
 		<MudGrid Spacing="4">
 
 			@* Works *@
-			<MudItem xs="10">
+			<MudItem xs="5">
 				<MudField Variant=@Variant.Outlined
 						  InnerPadding=@false
 						  Label="Works">
 					<MudCheckBox T=@bool
 								 Size=@Size.Small
 								 @bind-Value=@blnError
-								 @bind-Value:after=@SaveRecord />
+								 @bind-Value:after=@SaveRecord />  @* Removing this but keeping DialogActions also prevents the Error *@
 				</MudField>
 			</MudItem>
 
