@@ -1,52 +1,176 @@
 ﻿@page "/"
 @inject IDialogService MudDialogs
 
-<PageTitle>Hot Reload Error</PageTitle>
+<PageTitle>Give Mud Select Focus</PageTitle>
 
-<MudGrid Spacing="4">
+<MudGrid Spacing="2">
 
-	<MudItem xs="3">
-		<MudButton Variant=@Variant.Filled
-				   Color=@Color.Primary
-				   OnClick=@OpenDialogError>
-			Open Dialog Error
-		</MudButton>
+	<MudItem xs="2">
+
+		<MudTextField @bind-Value=@strDummyField
+					  Margin=@Margin.Dense
+					  MaxLength="25"
+					  Clearable=@true
+					  Label="Dummy Field"
+					  ShrinkLabel=@true
+					  Variant=@Variant.Outlined />
+
 	</MudItem>
 
-	<MudItem xs="3">
-		<MudButton Variant=@Variant.Filled
-				   Color=@Color.Primary
-				   OnClick=@OpenDialogWorks>
-			Open Dialog Works
-		</MudButton>
-	</MudItem>
+	
+	@* PO Num *@
+	<MudItem xs="2">
+		<div @onfocusout="@CloseMudListPONum">
+			<MudTextField @bind-Value=@strUserInputPONum
+						  OnKeyDown=@PONumKeyDown
+						  Margin=@Margin.Dense
+						  MaxLength="25"
+						  Clearable=@true
+						  @onfocusin="@OpenMudListPONum"
+						  Label="PO Num"
+						  ShrinkLabel=@true
+						  Variant=@Variant.Outlined />
 
+			<MudPopover @bind-Open="@blnMudListOpenPONum"
+						Elevation="25"
+						TransformOrigin="Origin.TopCenter"
+						Square="@false"
+						Paper="@true"
+						RelativeWidth="DropdownWidth.Adaptive"
+						AnchorOrigin="Origin.BottomCenter">
+
+				<MudList @ref=@refMudListPONum
+						 T="string"
+						 SelectionMode="@SelectionMode.SingleSelection"
+						 SelectedValue="@strPONumMudSelect"
+						 SelectedValueChanged="@SetPONum"
+						 Dense="@true"
+						 Style="max-height: 400px; overflow-y: auto; border: solid 1px black; border-radius: 8px; margin-left: 8px; margin-top: 0px;">
+
+					@foreach (var schedule in lstScheduledPONums)
+					{
+						<MudListItem Value="@schedule.PONum">
+							<MudStack Row="@true" Spacing="2">
+								<MudText Typo="@Typo.body1" Style="font-weight:700; width:150px; margin-left: -8px;">@schedule.PONum</MudText>
+
+								@if (schedule.IsDrum)
+								{
+									<MudIcon Icon=@Icons.Material.Rounded.Check
+											 Color="@Color.Dark"
+											 Style="width:50px;" />
+								}
+								else
+								{
+									<div style="width:50px;"></div>
+								}
+								<MudText Typo="@Typo.body1" Style="width:125px;">@schedule.Status</MudText>
+								<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.BrokerName</MudText>
+								<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.CarrierName</MudText>
+							</MudStack>
+						</MudListItem>
+					}
+
+				</MudList>
+			</MudPopover>
+		</div>
+	</MudItem>
 </MudGrid>
 
 @code {
 
-	private async Task OpenDialogError()
-	{
-		DialogOptions options = new()
-		{
-			CloseButton = true,
-			MaxWidth = MaxWidth.Small,
-			FullWidth = true
-		};
+	private MudList<string> refMudListPONum;
+	private bool blnMudListOpenPONum;
+	private string strUserInputPONum;
+	private string strPONumMudSelect;
+	private string strDummyField;
 
-		await MudDialogs.ShowAsync<DlgMudCheckBoxError>("Hot Reload Error: Change xs=\"\" to generate Error", options);
+	private void OpenMudListPONum()
+	{
+		blnMudListOpenPONum = true;
 	}
 
-	private async Task OpenDialogWorks()
+	private async Task CloseMudListPONum()
 	{
-		DialogOptions options = new()
-		{
-			CloseButton = true,
-			MaxWidth = MaxWidth.Small,
-			FullWidth = true
-		};
-
-		await MudDialogs.ShowAsync<DlgMudCheckBoxWorks>("Hot Reload Works", options);
+		await Task.Delay(150);
+		blnMudListOpenPONum = false;
+		strPONumMudSelect = null;
 	}
+
+	private async Task PONumKeyDown(KeyboardEventArgs args)
+	{
+		if (args.Key != "ArrowDown" || lstScheduledPONums.Count == 0)
+			return;
+
+		// ToDo: Open the MudList and focus on the first item
+
+	}
+
+	private async Task SetPONum(string? strValue)
+	{
+		strPONumMudSelect = strValue;
+		strUserInputPONum = strPONumMudSelect;
+	}
+
+	public class ScheduledPONum
+	{
+		public string PONum { get; set; } = "";
+		public bool IsDrum { get; set; }
+		public string Status { get; set; } = "";
+		public string BrokerName { get; set; } = "";
+		public string CarrierName { get; set; } = "";
+	}
+
+	private List<ScheduledPONum> lstScheduledPONums = new()
+	{
+		new()
+		{
+			PONum = "PO-2026-1001",
+			IsDrum = true,
+			Status = "Pending",
+			BrokerName = "Clean Harbors",
+			CarrierName = "ABC Transport"
+		},
+		new()
+		{
+			PONum = "PO-2026-1002",
+			IsDrum = false,
+			Status = "Scheduled",
+			BrokerName = "GFL Environmental",
+			CarrierName = "TransX"
+		},
+		new()
+		{
+			PONum = "PO-2026-1003",
+			IsDrum = true,
+			Status = "Completed",
+			BrokerName = "Waste Connections",
+			CarrierName = "Day & Ross"
+		},
+		new()
+		{
+			PONum = "PO-2026-1004",
+			IsDrum = true,
+			Status = "In Transit",
+			BrokerName = "Clean Harbors",
+			CarrierName = "Manitoulin Transport"
+		},
+		new()
+		{
+			PONum = "PO-2026-1005",
+			IsDrum = false,
+			Status = "Pending",
+			BrokerName = "GFL Environmental",
+			CarrierName = "Challenger Motor Freight"
+		}
+	};
 }
 
+<style>
+	/*Overwriting the MudBlazor .mud-header class*/
+	.mud-header {
+		color: #FFFFFF !important;
+		border: thin solid black !important;
+		border-radius: 0 !important;
+		background-color: var(--mud-palette-primary) !important;
+	}
+</style>
