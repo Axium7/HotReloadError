@@ -20,95 +20,54 @@
 	
 	@* PO Num *@
 	<MudItem xs="2">
-		<div @onfocusout="@CloseMudListPONum">
-			<MudTextField @bind-Value=@strUserInputPONum
-						  OnKeyDown=@PONumKeyDown
-						  Margin=@Margin.Dense
-						  MaxLength="25"
-						  Clearable=@true
-						  @onfocusin="@OpenMudListPONum"
-						  Label="PO Num"
-						  ShrinkLabel=@true
-						  Variant=@Variant.Outlined />
+		<MudAutocomplete T="string"
+						 @bind-Value=@strUserInputPONum
+						 SearchFunc=@SearchPONums
+						 CoerceValue=@true
+						 Margin=@Margin.Dense
+						 MaxLength="25"
+						 Clearable=@true
+						 Label="PO Num"
+						 ShrinkLabel=@true
+						 Variant=@Variant.Outlined
+						 Dense=@true
+						 RelativeWidth="DropdownWidth.Adaptive">
+			<ItemTemplate>
+				@{ var schedule = lstScheduledPONums.First(s => s.PONum == context); }
+				<MudStack Row="@true" Spacing="2">
+					<MudText Typo="@Typo.body1" Style="font-weight:700; width:150px;">@schedule.PONum</MudText>
 
-			<MudPopover @bind-Open="@blnMudListOpenPONum"
-						Elevation="25"
-						TransformOrigin="Origin.TopCenter"
-						Square="@false"
-						Paper="@true"
-						RelativeWidth="DropdownWidth.Adaptive"
-						AnchorOrigin="Origin.BottomCenter">
-
-				<MudList @ref=@refMudListPONum
-						 T="string"
-						 SelectionMode="@SelectionMode.SingleSelection"
-						 SelectedValue="@strPONumMudSelect"
-						 SelectedValueChanged="@SetPONum"
-						 Dense="@true"
-						 Style="max-height: 400px; overflow-y: auto; border: solid 1px black; border-radius: 8px; margin-left: 8px; margin-top: 0px;">
-
-					@foreach (var schedule in lstScheduledPONums)
+					@if (schedule.IsDrum)
 					{
-						<MudListItem Value="@schedule.PONum">
-							<MudStack Row="@true" Spacing="2">
-								<MudText Typo="@Typo.body1" Style="font-weight:700; width:150px; margin-left: -8px;">@schedule.PONum</MudText>
-
-								@if (schedule.IsDrum)
-								{
-									<MudIcon Icon=@Icons.Material.Rounded.Check
-											 Color="@Color.Dark"
-											 Style="width:50px;" />
-								}
-								else
-								{
-									<div style="width:50px;"></div>
-								}
-								<MudText Typo="@Typo.body1" Style="width:125px;">@schedule.Status</MudText>
-								<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.BrokerName</MudText>
-								<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.CarrierName</MudText>
-							</MudStack>
-						</MudListItem>
+						<MudIcon Icon=@Icons.Material.Rounded.Check
+								 Color="@Color.Dark"
+								 Style="width:50px;" />
 					}
-
-				</MudList>
-			</MudPopover>
-		</div>
+					else
+					{
+						<div style="width:50px;"></div>
+					}
+					<MudText Typo="@Typo.body1" Style="width:125px;">@schedule.Status</MudText>
+					<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.BrokerName</MudText>
+					<MudText Typo="@Typo.body1" Style="width:200px;">@schedule.CarrierName</MudText>
+				</MudStack>
+			</ItemTemplate>
+		</MudAutocomplete>
 	</MudItem>
 </MudGrid>
 
 @code {
 
-	private MudList<string> refMudListPONum;
-	private bool blnMudListOpenPONum;
-	private string strUserInputPONum;
-	private string strPONumMudSelect;
+	private string? strUserInputPONum;
 	private string strDummyField;
 
-	private void OpenMudListPONum()
+	private Task<IEnumerable<string>> SearchPONums(string? strSearch, CancellationToken token)
 	{
-		blnMudListOpenPONum = true;
-	}
+		IEnumerable<string> lstMatches = lstScheduledPONums
+			.Select(s => s.PONum)
+			.Where(poNum => string.IsNullOrWhiteSpace(strSearch) || poNum.Contains(strSearch, StringComparison.OrdinalIgnoreCase));
 
-	private async Task CloseMudListPONum()
-	{
-		await Task.Delay(150);
-		blnMudListOpenPONum = false;
-		strPONumMudSelect = null;
-	}
-
-	private async Task PONumKeyDown(KeyboardEventArgs args)
-	{
-		if (args.Key != "ArrowDown" || lstScheduledPONums.Count == 0)
-			return;
-
-		// ToDo: Open the MudList and focus on the first item
-
-	}
-
-	private async Task SetPONum(string? strValue)
-	{
-		strPONumMudSelect = strValue;
-		strUserInputPONum = strPONumMudSelect;
+		return Task.FromResult(lstMatches);
 	}
 
 	public class ScheduledPONum
