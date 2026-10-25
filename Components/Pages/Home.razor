@@ -20,8 +20,9 @@
 	
 	@* PO Num *@
 	<MudItem xs="2">
-		<div @onfocusout="@CloseMudListPONum">
-			<MudTextField @bind-Value=@strUserInputPONum
+		<div @onfocusout="@PONumFieldFocusOut">
+			<MudTextField @ref=@refPONumField
+						  @bind-Value=@strUserInputPONum
 						  OnKeyDown=@PONumKeyDown
 						  Margin=@Margin.Dense
 						  MaxLength="25"
@@ -39,6 +40,10 @@
 						RelativeWidth="DropdownWidth.Adaptive"
 						AnchorOrigin="Origin.BottomCenter">
 
+				<div @ref=@refPONumListContainer
+					 @onfocusin="@PONumListFocusIn"
+					 @onfocusout="@PONumListFocusOut"
+					 @onkeydown="@PONumListKeyDown">
 				<MudList @ref=@refMudListPONum
 						 T="string"
 						 SelectionMode="@SelectionMode.SingleSelection"
@@ -49,7 +54,7 @@
 
 					@foreach (var schedule in lstScheduledPONums)
 					{
-						<MudListItem Value="@schedule.PONum">
+						<MudListItem Value="@schedule.PONum" OnClick="@CommitPONum">
 							<MudStack Row="@true" Spacing="2">
 								<MudText Typo="@Typo.body1" Style="font-weight:700; width:150px; margin-left: -8px;">@schedule.PONum</MudText>
 
@@ -71,6 +76,7 @@
 					}
 
 				</MudList>
+				</div>
 			</MudPopover>
 		</div>
 	</MudItem>
@@ -80,35 +86,116 @@
 
 	private MudList<string> refMudListPONum;
 	private bool blnMudListOpenPONum;
-	private string strUserInputPONum;
-	private string strPONumMudSelect;
+	private string? strUserInputPONum;
+	private string? strPONumMudSelect;
 	private string strDummyField;
+	private MudTextField<string>? refPONumField;
+	private ElementReference refPONumListContainer;
+	private bool blnPONumFieldHasFocus;
+	private bool blnPONumListHasFocus;
+	private bool blnFocusPONumListOnRender;
+	private bool blnSkipOpenPONum;
+	private string? strPONumBeforeList;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!blnFocusPONumListOnRender)
+			return;
+
+		blnFocusPONumListOnRender = false;
+		await refPONumListContainer.MudFocusFirstAsync();
+	}
 
 	private void OpenMudListPONum()
 	{
+		blnPONumFieldHasFocus = true;
+
+		if (blnSkipOpenPONum)
+		{
+			blnSkipOpenPONum = false;
+			return;
+		}
+
 		blnMudListOpenPONum = true;
+	}
+
+	private async Task PONumFieldFocusOut()
+	{
+		blnPONumFieldHasFocus = false;
+		await CloseMudListPONum();
+	}
+
+	private void PONumListFocusIn()
+	{
+		blnPONumListHasFocus = true;
+	}
+
+	private async Task PONumListFocusOut()
+	{
+		blnPONumListHasFocus = false;
+		await CloseMudListPONum();
 	}
 
 	private async Task CloseMudListPONum()
 	{
 		await Task.Delay(150);
+
+		// Focus moved between the field and the list, so keep the list open
+		if (blnPONumFieldHasFocus || blnPONumListHasFocus)
+			return;
+
+		HideMudListPONum();
+	}
+
+	private void HideMudListPONum()
+	{
 		blnMudListOpenPONum = false;
 		strPONumMudSelect = null;
 	}
 
-	private async Task PONumKeyDown(KeyboardEventArgs args)
+	private void PONumKeyDown(KeyboardEventArgs args)
 	{
 		if (args.Key != "ArrowDown" || lstScheduledPONums.Count == 0)
 			return;
 
-		// ToDo: Open the MudList and focus on the first item
+		// The list renders in the popover provider, so focus its first item after render
+		strPONumBeforeList = strUserInputPONum;
+		blnMudListOpenPONum = true;
+		blnFocusPONumListOnRender = true;
+	}
 
+	private async Task PONumListKeyDown(KeyboardEventArgs args)
+	{
+		if (args.Key != "Escape")
+			return;
+
+		// Selection follows focus in the list, so Escape restores the value from before ArrowDown
+		strUserInputPONum = strPONumBeforeList;
+		HideMudListPONum();
+		await FocusPONumField();
 	}
 
 	private async Task SetPONum(string? strValue)
 	{
 		strPONumMudSelect = strValue;
 		strUserInputPONum = strPONumMudSelect;
+	}
+
+	// Click, Enter and Space commit the item the list has already selected
+	private async Task CommitPONum()
+	{
+		HideMudListPONum();
+		await FocusPONumField();
+	}
+
+	private async Task FocusPONumField()
+	{
+		if (refPONumField is null)
+			return;
+
+		// Return focus without reopening the list
+		blnSkipOpenPONum = true;
+		await refPONumField.FocusAsync();
 	}
 
 	public class ScheduledPONum
